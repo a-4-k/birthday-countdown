@@ -170,7 +170,7 @@
 
     <script>
         // PASTE YOUR GEMINI API KEY BETWEEN THE QUOTES BELOW
-        const apiKey = "AIzaSyDEJANfAsXo9XKit5Q0Vqp3znP4FT2mHmI"; 
+        const apiKey = ""; 
 
         const startDate = new Date("May 9, 2026 00:00:00").getTime();
         const targetDate = new Date("May 16, 2026 00:00:00").getTime();
@@ -191,8 +191,8 @@
                 alert("Please add your Gemini API Key to the code to use AI features!");
                 return;
             }
-            // UPDATED URL: Fixed the 404 by using the stable Gemini 1.5 Flash endpoint
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            // UPDATED URL: Using gemini-2.5-flash-preview-09-2025:generateContent to match the Canvas environment
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
             
             for (let i = 0; i < 5; i++) {
                 try {
