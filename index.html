@@ -31,10 +31,21 @@
             z-index: 50;
         }
 
-        .locked {
-            filter: grayscale(1) blur(2px);
-            opacity: 0.6;
-            cursor: not-allowed;
+        /* Enhanced Locked State: Heavy blur and higher opacity overlay */
+        .locked-img {
+            filter: blur(20px) grayscale(1);
+            opacity: 0.3;
+        }
+
+        .locked-overlay {
+            background: rgba(255, 245, 247, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            inset: 0;
+            z-index: 10;
         }
 
         .heart {
@@ -87,22 +98,27 @@
         <h1 class="text-5xl md:text-7xl font-bold text-gray-800 mb-2">7 Days of <span class="gradient-text">Magic</span></h1>
         <p class="text-gray-500 max-w-md mx-auto text-sm md:text-base">One memory or message unlocked every day until the most special day of the year.</p>
         
-        <div id="main-timer" class="flex justify-center gap-4 mt-8">
-            <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
-                <span id="t-days" class="block text-2xl font-bold text-pink-600">00</span>
-                <span class="text-[10px] uppercase tracking-tighter text-gray-400">Days</span>
+        <div id="timer-wrapper" class="mt-8">
+            <div id="main-timer" class="flex justify-center gap-4">
+                <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
+                    <span id="t-days" class="block text-2xl font-bold text-pink-600">00</span>
+                    <span class="text-[10px] uppercase tracking-tighter text-gray-400">Days</span>
+                </div>
+                <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
+                    <span id="t-hours" class="block text-2xl font-bold text-pink-600">00</span>
+                    <span class="text-[10px] uppercase tracking-tighter text-gray-400">Hrs</span>
+                </div>
+                <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
+                    <span id="t-mins" class="block text-2xl font-bold text-pink-600">00</span>
+                    <span class="text-[10px] uppercase tracking-tighter text-gray-400">Mins</span>
+                </div>
+                <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
+                    <span id="t-secs" class="block text-2xl font-bold text-pink-600">00</span>
+                    <span class="text-[10px] uppercase tracking-tighter text-gray-400">Secs</span>
+                </div>
             </div>
-            <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
-                <span id="t-hours" class="block text-2xl font-bold text-pink-600">00</span>
-                <span class="text-[10px] uppercase tracking-tighter text-gray-400">Hrs</span>
-            </div>
-            <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
-                <span id="t-mins" class="block text-2xl font-bold text-pink-600">00</span>
-                <span class="text-[10px] uppercase tracking-tighter text-gray-400">Mins</span>
-            </div>
-            <div class="glass px-4 py-2 rounded-2xl shadow-sm min-w-[70px]">
-                <span id="t-secs" class="block text-2xl font-bold text-pink-600">00</span>
-                <span class="text-[10px] uppercase tracking-tighter text-gray-400">Secs</span>
+            <div id="timer-message" class="hidden glass px-8 py-4 rounded-3xl shadow-lg inline-block mx-auto border-pink-200">
+                <p class="cursive text-3xl text-pink-600">The most beautiful day has arrived.</p>
             </div>
         </div>
 
@@ -156,17 +172,18 @@
         // PASTE YOUR GEMINI API KEY BETWEEN THE QUOTES BELOW
         const apiKey = "AIzaSyDEJANfAsXo9XKit5Q0Vqp3znP4FT2mHmI"; 
 
+        const startDate = new Date("May 9, 2026 00:00:00").getTime();
         const targetDate = new Date("May 16, 2026 00:00:00").getTime();
         let currentMemory = null;
         
         const memories = [
-            { day: 7, title: "The Spark", text: "Starting our countdown today! Remembering the first time we met and how my world changed forever.", img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80" },
-            { day: 6, title: "Infinite Laughs", text: "6 days to go. I love how we can find humor in the smallest things. Your laugh is my favorite soundtrack.", img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" },
-            { day: 5, title: "Our Quiet Moments", text: "5 days left! Those lazy Sunday mornings and quiet coffee dates mean more to me.", img: "https://images.unsplash.com/photo-1464746133101-a2c3f88e0dd9?auto=format&fit=crop&w=600&q=80" },
-            { day: 4, title: "My Rock", text: "4 days away. Thank you for being the person I can always lean on.", img: "https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&w=600&q=80" },
-            { day: 3, title: "A Little Surprise", text: "3 days! The excitement is building. I can't wait for you to see what's planned.", img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80" },
-            { day: 2, title: "The Night Before", text: "Just 2 days left. Thinking about all the birthdays we've shared together.", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" },
-            { day: 1, title: "Almost Midnight", text: "Only 1 day left! Sleep tight, my queen. Tomorrow is YOUR day.", img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=600&q=80" }
+            { id: 1, dayTrigger: 7, title: "The Spark", text: "Starting our countdown today! Remembering the first time we met and how my world changed forever.", img: "https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, dayTrigger: 6, title: "Infinite Laughs", text: "6 days to go. I love how we can find humor in the smallest things. Your laugh is my favorite soundtrack.", img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" },
+            { id: 3, dayTrigger: 5, title: "Our Quiet Moments", text: "5 days left! Those lazy Sunday mornings and quiet coffee dates mean more to me.", img: "https://images.unsplash.com/photo-1464746133101-a2c3f88e0dd9?auto=format&fit=crop&w=600&q=80" },
+            { id: 4, dayTrigger: 4, title: "My Rock", text: "4 days away. Thank you for being the person I can always lean on.", img: "https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&w=600&q=80" },
+            { id: 5, dayTrigger: 3, title: "A Little Surprise", text: "3 days! The excitement is building. I can't wait for you to see what's planned.", img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80" },
+            { id: 6, dayTrigger: 2, title: "The Night Before", text: "Just 2 days left. Thinking about all the birthdays we've shared together.", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" },
+            { id: 7, dayTrigger: 1, title: "Almost Midnight", text: "Only 1 day left! Sleep tight, my queen. Tomorrow is YOUR day.", img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=600&q=80" }
         ];
 
         async function callGemini(prompt, systemInstruction = "") {
@@ -243,22 +260,34 @@
         function renderCards() {
             const grid = document.getElementById('cards-grid');
             const now = new Date().getTime();
-            const daysLeft = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+            
+            const msSinceStart = now - startDate;
+            const daysPassed = Math.floor(msSinceStart / (1000 * 60 * 60 * 24));
+            
             grid.innerHTML = '';
-            memories.forEach((m) => {
-                const isLocked = daysLeft < m.day;
+            memories.forEach((m, index) => {
+                const isLocked = daysPassed < index;
+                
                 const rotation = (Math.random() * 10 - 5).toFixed(2);
                 const card = document.createElement('div');
-                card.className = `polaroid glass p-3 pb-8 rounded-sm bg-white cursor-pointer ${isLocked ? 'locked' : ''}`;
+                // Removed general "locked" class to use specific child styles for visibility
+                card.className = `polaroid glass p-3 pb-8 rounded-sm bg-white cursor-pointer`;
                 card.style.transform = `rotate(${rotation}deg)`;
+                card.style.cursor = isLocked ? 'not-allowed' : 'pointer';
+
                 card.innerHTML = `
-                    <div class="relative aspect-square overflow-hidden mb-4 bg-gray-100 rounded-sm">
-                        ${isLocked ? `<div class="absolute inset-0 flex flex-col items-center justify-center bg-black/40 text-white"><span class="text-[10px] uppercase font-bold tracking-widest">Locked</span></div>` : ''}
-                        <img src="${m.img}" class="w-full h-full object-cover">
+                    <div class="relative aspect-square overflow-hidden mb-4 bg-gray-200 rounded-sm">
+                        ${isLocked ? `
+                            <div class="locked-overlay">
+                                <span class="text-2xl mb-1">🔒</span>
+                                <span class="text-[10px] uppercase font-bold tracking-widest text-pink-400">Locked</span>
+                            </div>
+                        ` : ''}
+                        <img src="${m.img}" class="w-full h-full object-cover ${isLocked ? 'locked-img' : ''}">
                     </div>
                     <div class="text-center">
-                        <span class="text-pink-400 font-bold text-xs">DAY ${m.day}</span>
-                        <h3 class="cursive text-xl text-gray-700">${isLocked ? 'Keep Waiting...' : m.title}</h3>
+                        <span class="text-pink-400 font-bold text-xs">DAY ${m.dayTrigger}</span>
+                        <h3 class="cursive text-xl text-gray-700">${isLocked ? 'A Secret Memory...' : m.title}</h3>
                     </div>
                 `;
                 if (!isLocked) card.onclick = () => openModal(m);
@@ -269,15 +298,31 @@
         function updateTimer() {
             const now = new Date().getTime();
             const distance = targetDate - now;
-            if (distance < 0) { document.getElementById('birthday-overlay').style.display = 'flex'; return; }
+
+            const timerGrid = document.getElementById('main-timer');
+            const timerMsg = document.getElementById('timer-message');
+
+            if (distance < 0) {
+                if(document.getElementById('birthday-overlay').style.display !== 'none' && !window.birthdayShown) {
+                    document.getElementById('birthday-overlay').style.display = 'flex';
+                    window.birthdayShown = true;
+                }
+                timerGrid.classList.add('hidden');
+                timerMsg.classList.remove('hidden');
+                return;
+            }
+
             const d = Math.floor(distance / (1000 * 60 * 60 * 24));
             const h = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const m = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             const s = Math.floor((distance % (1000 * 60)) / 1000);
+
             document.getElementById('t-days').innerText = d.toString().padStart(2, '0');
             document.getElementById('t-hours').innerText = h.toString().padStart(2, '0');
             document.getElementById('t-mins').innerText = m.toString().padStart(2, '0');
             document.getElementById('t-secs').innerText = s.toString().padStart(2, '0');
+            
+            if (s === 0) renderCards();
         }
 
         function openModal(m) {
