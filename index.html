@@ -172,18 +172,18 @@
         // PASTE YOUR GEMINI API KEY BETWEEN THE QUOTES BELOW
         const apiKey = "AIzaSyDEJANfAsXo9XKit5Q0Vqp3znP4FT2mHmI"; 
 
-        const startDate = new Date("May 9, 2026 00:00:00").getTime();
-        const targetDate = new Date("May 16, 2026 00:00:00").getTime();
+        const startDate = new Date("May 2, 2026 00:00:00").getTime();
+        const targetDate = new Date("May 9, 2026 00:00:00").getTime();
         let currentMemory = null;
         
         const memories = [
             { id: 1, dayTrigger: 7, title: "The Spark", text: "Starting our countdown today! Remembering the first time we met and how my world changed forever.", img: "images/black&white.JPG" },
-            { id: 2, dayTrigger: 6, title: "Infinite Laughs", text: "6 days to go. I love how we can find humor in the smallest things. Your laugh is my favorite soundtrack.", img: "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=600&q=80" },
-            { id: 3, dayTrigger: 5, title: "Our Quiet Moments", text: "5 days left! Those lazy Sunday mornings and quiet coffee dates mean more to me.", img: "https://images.unsplash.com/photo-1464746133101-a2c3f88e0dd9?auto=format&fit=crop&w=600&q=80" },
-            { id: 4, dayTrigger: 4, title: "My Rock", text: "4 days away. Thank you for being the person I can always lean on.", img: "https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&w=600&q=80" },
-            { id: 5, dayTrigger: 3, title: "A Little Surprise", text: "3 days! The excitement is building. I can't wait for you to see what's planned.", img: "https://images.unsplash.com/photo-1513151233558-d860c5398176?auto=format&fit=crop&w=600&q=80" },
-            { id: 6, dayTrigger: 2, title: "The Night Before", text: "Just 2 days left. Thinking about all the birthdays we've shared together.", img: "https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=600&q=80" },
-            { id: 7, dayTrigger: 1, title: "Almost Midnight", text: "Only 1 day left! Sleep tight, my queen. Tomorrow is YOUR day.", img: "https://images.unsplash.com/photo-1469334031218-e382a71b716b?auto=format&fit=crop&w=600&q=80" }
+            { id: 2, dayTrigger: 6, title: "Our Quiet Moments", text: "5 days left! Those lazy Sunday mornings and quiet coffee dates mean more to me.", img: "images/Wedding.jpg" },
+            { id: 3, dayTrigger: 5, title: "Infinite Laughs", text: "6 days to go. I love how we can find humor in the smallest things. Your laugh is my favorite soundtrack.", img: "images/honeymoon.JPG" },    
+            { id: 4, dayTrigger: 4, title: "My Rock", text: "4 days away. Thank you for being the person I can always lean on.", img: "images/raftaRafta.JPG" },
+            { id: 5, dayTrigger: 3, title: "A Little Surprise", text: "3 days! The excitement is building. I can't wait for you to see what's planned.", img: "images/NY2026.JPG" },
+            { id: 6, dayTrigger: 2, title: "The Night Before", text: "Just 2 days left. Thinking about all the birthdays we've shared together.", img: "images/Singapore.JPG" },
+            { id: 7, dayTrigger: 1, title: "Almost Midnight", text: "Only 1 day left! Sleep tight, my queen. Tomorrow is YOUR day.", img: "images/finale.JPG" }
         ];
 
         async function callGemini(prompt, systemInstruction = "") {
