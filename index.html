@@ -191,21 +191,33 @@
                 alert("Please add your Gemini API Key to the code to use AI features!");
                 return;
             }
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            // UPDATED URL: Fixed the 404 by using the stable Gemini 1.5 Flash endpoint
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            
             for (let i = 0; i < 5; i++) {
                 try {
                     const response = await fetch(url, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }],
-                            systemInstruction: systemInstruction ? { parts: [{ text: systemInstruction }] } : undefined
+                            contents: [{ 
+                                parts: [{ text: prompt }] 
+                            }],
+                            systemInstruction: systemInstruction ? { 
+                                parts: [{ text: systemInstruction }] 
+                            } : undefined
                         })
                     });
-                    if (!response.ok) throw new Error('API Error');
+                    
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.error?.message || 'API Error');
+                    }
+                    
                     const data = await response.json();
                     return data.candidates?.[0]?.content?.parts?.[0]?.text;
                 } catch (e) {
+                    console.warn(`Retry ${i + 1} due to error:`, e.message);
                     await new Promise(r => setTimeout(r, Math.pow(2, i) * 1000));
                 }
             }
@@ -223,10 +235,14 @@
             btn.disabled = true;
             try {
                 const result = await callGemini(`Write a 4-line rhyming romantic poem about: ${currentMemory.text}`, "You are a romantic poet.");
-                poemText.innerText = result.trim();
-                section.classList.remove('hidden');
-                btn.classList.add('hidden');
-            } catch (err) { console.error(err); } finally {
+                if (result) {
+                    poemText.innerText = result.trim();
+                    section.classList.remove('hidden');
+                    btn.classList.add('hidden');
+                }
+            } catch (err) { 
+                console.error(err); 
+            } finally {
                 label.classList.remove('hidden');
                 loader.classList.add('hidden');
                 btn.disabled = false;
@@ -241,10 +257,14 @@
             loader.classList.remove('hidden');
             label.classList.add('hidden');
             try {
-                const result = await callGemini("Write a one-sentence romantic future prediction starting with 'In this next chapter...'", "Romantic life partner.");
-                res.innerText = result.trim();
-                res.classList.remove('hidden');
-            } catch (err) { console.error(err); } finally {
+                const result = await callGemini("Write a one-sentence romantic future prediction starting with 'In this next chapter...'", "You are a helpful romantic partner predicting a beautiful future together.");
+                if (result) {
+                    res.innerText = result.trim();
+                    res.classList.remove('hidden');
+                }
+            } catch (err) { 
+                console.error(err); 
+            } finally {
                 loader.classList.add('hidden');
                 label.classList.remove('hidden');
             }
@@ -270,7 +290,6 @@
                 
                 const rotation = (Math.random() * 10 - 5).toFixed(2);
                 const card = document.createElement('div');
-                // Removed general "locked" class to use specific child styles for visibility
                 card.className = `polaroid glass p-3 pb-8 rounded-sm bg-white cursor-pointer`;
                 card.style.transform = `rotate(${rotation}deg)`;
                 card.style.cursor = isLocked ? 'not-allowed' : 'pointer';
